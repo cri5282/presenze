@@ -1,0 +1,15 @@
+# Profilo di produzione opzionale.
+# Avvio: docker compose --profile production up -d --build
+# APP_DOMAIN deve essere impostato nel file .env nella root del progetto.
+{$APP_DOMAIN} {
+	encode zstd gzip
+
+	# nginx serve la PWA e inoltra già /api al backend FastAPI.
+	reverse_proxy frontend:80
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+}
