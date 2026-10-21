@@ -8,8 +8,10 @@ import "./styles.css";
 
 registerSW({ immediate: true });
 
+const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <BrowserRouter>
+  <BrowserRouter basename={basename || undefined}>
     <ToastProvider>
       <AuthProvider>
         <App />

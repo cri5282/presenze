@@ -44,7 +44,7 @@ export default function CalendarPage() {
   const [events, setEvents] = useState<EventItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const panelRef = useRef<HTMLElement>(null);
 
   const grid = useMemo(() => monthGrid(view), [view]);

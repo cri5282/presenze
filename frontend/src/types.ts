@@ -1,4 +1,5 @@
 export type AttendanceStatus = "present" | "absent" | "excused";
+export type UserRole = "admin" | "user";
 
 export interface Attendance {
   status: AttendanceStatus;
@@ -9,7 +10,7 @@ export interface Attendance {
 }
 
 export interface EventItem {
-  id: number;
+  id: string;
   google_event_id: string;
   calendar_id: string;
   title: string;
@@ -24,13 +25,23 @@ export interface EventItem {
 }
 
 export interface User {
-  id: number;
-  email: string;
+  id: string;
+  username: string;
   name: string;
-  picture: string | null;
-  selected_calendars: string[];
-  needs_reauth: boolean;
-  last_sync_at: string | null;
+  role: UserRole;
+  must_change_password: boolean;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface CreatedUser {
+  user: User;
+  initial_password: string;
+}
+
+export interface BulkCreateResult {
+  created: CreatedUser[];
+  errors: string[];
 }
 
 export interface CalendarInfo {
@@ -69,4 +80,18 @@ export interface SyncResult {
   calendars_synced: number;
   errors: string[];
   last_sync_at: string | null;
+}
+
+export interface SyncStatus {
+  google_configured: boolean;
+  connected: boolean;
+  last_sync_at: string | null;
+  calendar_count: number;
+}
+
+export interface CalendarSettings {
+  calendar_ids: string[];
+  last_sync_at: string | null;
+  updated_at: string | null;
+  updated_by: string | null;
 }

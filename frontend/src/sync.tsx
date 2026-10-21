@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { api } from "./api";
+import { api } from "./data";
 import { useAuth } from "./auth";
 import { useToast } from "./toast";
 import type { SyncResult } from "./types";
@@ -17,33 +17,71 @@ interface SyncContextValue {
   syncing: boolean;
   version: number;
   lastError: string | null;
+  lastSyncAt: string | null;
+  calendarIds: string[];
+  settingsLoading: boolean;
   syncNow: (silent?: boolean) => Promise<SyncResult | null>;
+  saveCalendars: (calendarIds: string[]) => Promise<void>;
+  refreshSettings: () => Promise<void>;
 }
 
 const SyncContext = createContext<SyncContextValue | null>(null);
-const AUTO_SYNC_AFTER_MS = 10 * 60 * 1000;
 
 export function SyncProvider({ children }: { children: ReactNode }) {
-  const { user, refresh } = useAuth();
+  const { user } = useAuth();
   const { push } = useToast();
   const [syncing, setSyncing] = useState(false);
   const [version, setVersion] = useState(0);
   const [lastError, setLastError] = useState<string | null>(null);
+  const [lastSyncAt, setLastSyncAt] = useState<string | null>(null);
+  const [calendarIds, setCalendarIds] = useState<string[]>(["primary"]);
+  const [settingsLoading, setSettingsLoading] = useState(true);
   const inFlight = useRef(false);
-  const autoFor = useRef<number | null>(null);
+
+  const refreshSettings = useCallback(async () => {
+    if (!user) {
+      setSettingsLoading(false);
+      return;
+    }
+    setSettingsLoading(true);
+    try {
+      const settings = await api.calendarSettings();
+      setLastSyncAt(settings.last_sync_at);
+      setCalendarIds(settings.calendar_ids.length ? settings.calendar_ids : ["primary"]);
+    } catch {
+      // La lettura delle impostazioni non deve bloccare l'app.
+    } finally {
+      setSettingsLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    void refreshSettings();
+  }, [refreshSettings]);
 
   const syncNow = useCallback(
     async (silent = false): Promise<SyncResult | null> => {
+      if (!user || user.role !== "admin") {
+        if (!silent) push("Solo l'amministratore può sincronizzare il calendario.", "error");
+        return null;
+      }
       if (inFlight.current) return null;
       inFlight.current = true;
       setSyncing(true);
       setLastError(null);
       try {
         const result = await api.sync();
-        if (!result.ok) {
-          const message = result.errors[0] ?? "Sincronizzazione non riuscita";
+        if (result.errors.length) {
+          const message = result.errors[0];
           setLastError(message);
-          if (!silent) push(message, "error");
+          if (!silent) {
+            push(
+              result.ok
+                ? `Sincronizzazione parziale: ${message}`
+                : message,
+              result.ok ? "info" : "error",
+            );
+          }
         } else if (!silent) {
           push(
             result.events_processed > 0
@@ -52,7 +90,8 @@ export function SyncProvider({ children }: { children: ReactNode }) {
             "success",
           );
         }
-        await refresh();
+        if (result.last_sync_at) setLastSyncAt(result.last_sync_at);
+        await refreshSettings();
         setVersion((current) => current + 1);
         return result;
       } catch (error) {
@@ -65,22 +104,38 @@ export function SyncProvider({ children }: { children: ReactNode }) {
         setSyncing(false);
       }
     },
-    [push, refresh],
+    [push, refreshSettings, user],
   );
 
-  useEffect(() => {
-    if (!user || user.needs_reauth) return;
-    if (autoFor.current === user.id) return;
-    autoFor.current = user.id;
-    const last = user.last_sync_at ? new Date(user.last_sync_at).getTime() : 0;
-    if (Date.now() - last > AUTO_SYNC_AFTER_MS) {
-      void syncNow(true);
-    }
-  }, [user, syncNow]);
+  const saveCalendars = useCallback(async (ids: string[]) => {
+    const settings = await api.saveCalendars(ids);
+    setCalendarIds(settings.calendar_ids);
+    setVersion((current) => current + 1);
+  }, []);
 
   const value = useMemo(
-    () => ({ syncing, version, lastError, syncNow }),
-    [syncing, version, lastError, syncNow],
+    () => ({
+      syncing,
+      version,
+      lastError,
+      lastSyncAt,
+      calendarIds,
+      settingsLoading,
+      syncNow,
+      saveCalendars,
+      refreshSettings,
+    }),
+    [
+      syncing,
+      version,
+      lastError,
+      lastSyncAt,
+      calendarIds,
+      settingsLoading,
+      syncNow,
+      saveCalendars,
+      refreshSettings,
+    ],
   );
 
   return <SyncContext.Provider value={value}>{children}</SyncContext.Provider>;

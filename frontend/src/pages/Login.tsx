@@ -1,48 +1,57 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
-import { BarChart3, CalendarCheck, RefreshCw, ShieldCheck } from "lucide-react";
+import {
+  BarChart3,
+  CalendarCheck,
+  RefreshCw,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { LogoMark } from "../components/Logo";
-
-function GoogleIcon() {
-  return (
-    <svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true">
-      <path
-        fill="#FFC107"
-        d="M43.6 20.1H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.1 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.6-.4-3.9z"
-      />
-      <path
-        fill="#FF3D00"
-        d="m6.3 14.7 6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
-      />
-      <path
-        fill="#4CAF50"
-        d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.3 0-9.7-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"
-      />
-      <path
-        fill="#1976D2"
-        d="M43.6 20.1H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.6l6.2 5.2C36.9 39.2 44 34 44 24c0-1.3-.1-2.6-.4-3.9z"
-      />
-    </svg>
-  );
-}
+import { useAuth } from "../auth";
+import { api } from "../data";
+import { friendlyError } from "../errors";
+import { isFirebaseConfigured } from "../firebase";
+import { Spinner } from "../components/ui";
 
 export default function LoginPage() {
-  const [error] = useState(() => new URLSearchParams(window.location.search).get("error"));
-  const [configured, setConfigured] = useState<boolean | null>(null);
+  const { login } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [setupDone, setSetupDone] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (error) window.history.replaceState({}, "", "/");
-  }, [error]);
-
-  useEffect(() => {
-    fetch("/api/health")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => setConfigured(data ? Boolean(data.google_configured) : null))
-      .catch(() => setConfigured(null));
+    if (!isFirebaseConfigured) {
+      setSetupDone(false);
+      return;
+    }
+    let alive = true;
+    api
+      .checkSetup()
+      .then((configured) => {
+        if (alive) setSetupDone(configured);
+      })
+      .catch(() => {
+        if (alive) setSetupDone(null);
+      });
+    return () => {
+      alive = false;
+    };
   }, []);
 
-  function login() {
-    window.location.href = "/api/auth/google/login";
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setBusy(true);
+    try {
+      await login(username, password);
+    } catch (err) {
+      setError(friendlyError(err, "Accesso non riuscito."));
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -53,9 +62,26 @@ export default function LoginPage() {
           <LogoMark size={60} />
           <div>
             <h1>Presenze</h1>
-            <p>Il tuo registro personale, sempre allineato al calendario.</p>
+            <p>Il registro condiviso della classe, con i dati di ognuno separati.</p>
           </div>
         </div>
+
+        {!isFirebaseConfigured ? (
+          <div className="alert alert-error" role="alert">
+            <span>
+              Firebase non è configurato. Imposta le variabili <code>VITE_FIREBASE_*</code> e
+              ricostruisci l'app seguendo il README.
+            </span>
+          </div>
+        ) : setupDone === false ? (
+          <div className="alert alert-warn" role="alert">
+            <span>
+              Configurazione iniziale non completata. Esegui{" "}
+              <code>npm run bootstrap</code> nella cartella <code>scripts/</code> per creare
+              l'amministratore e importare i dati esistenti.
+            </span>
+          </div>
+        ) : null}
 
         {error ? (
           <div className="alert alert-error" role="alert">
@@ -63,47 +89,70 @@ export default function LoginPage() {
           </div>
         ) : null}
 
-        {configured === false ? (
-          <div className="alert alert-warn" role="alert">
-            <span>
-              Il server non è ancora collegato a Google. Configura <code>GOOGLE_CLIENT_ID</code> e{" "}
-              <code>GOOGLE_CLIENT_SECRET</code> nel backend per abilitare l'accesso.
-            </span>
-          </div>
-        ) : null}
-
-        <button
-          type="button"
-          className="google-button"
-          onClick={login}
-          disabled={configured === false}
-        >
-          <GoogleIcon />
-          Continua con Google
-        </button>
+        <form className="login-form" onSubmit={(event) => void submit(event)}>
+          <label className="field">
+            <span>Username</span>
+            <input
+              type="text"
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder="nome.cognome"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              disabled={!isFirebaseConfigured || busy}
+              required
+            />
+          </label>
+          <label className="field">
+            <span>Password</span>
+            <input
+              type="password"
+              autoComplete="current-password"
+              placeholder="La tua password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              disabled={!isFirebaseConfigured || busy}
+              required
+            />
+          </label>
+          <button
+            type="submit"
+            className="button button-primary login-submit"
+            disabled={!isFirebaseConfigured || busy}
+          >
+            {busy ? <Spinner size={17} /> : null}
+            {busy ? "Accesso…" : "Accedi"}
+          </button>
+        </form>
 
         <ul className="login-features">
-          <li>
-            <RefreshCw size={17} />
-            <span>Importa e riallinea periodicamente gli eventi del tuo Google Calendar</span>
-          </li>
           <li>
             <CalendarCheck size={17} />
             <span>Un tap per segnare presente, assente o giustificato</span>
           </li>
           <li>
+            <RefreshCw size={17} />
+            <span>Calendario condiviso aggiornato manualmente dall'amministratore</span>
+          </li>
+          <li>
             <BarChart3 size={17} />
-            <span>Percentuali di presenza per materia e periodo</span>
+            <span>Statistiche personali per materia e periodo</span>
+          </li>
+          <li>
+            <Users size={17} />
+            <span>Ogni studente vede e modifica solo le proprie presenze</span>
           </li>
           <li>
             <ShieldCheck size={17} />
-            <span>Dati privati, token Google cifrato, nessuna condivisione</span>
+            <span>Nessun accesso Google per gli studenti, solo credenziali della classe</span>
           </li>
         </ul>
 
         <p className="login-note">
-          Accedendo autorizzi la sola lettura del calendario. L'app non crea, modifica o elimina
-          eventi. Leggi l'<Link to="/privacy">informativa privacy</Link>.
+          Se è il tuo primo accesso, usa la password iniziale fornita dall'amministratore: ti
+          verrà chiesto di cambiarla subito. Leggi l'
+          <Link to="/privacy">informativa privacy</Link>.
         </p>
       </div>
     </div>
