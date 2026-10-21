@@ -275,7 +275,7 @@ export default function AdminUsersPage() {
               </span>
               <input
                 type="text"
-                placeholder="nicolo.simonini"
+                placeholder="mario.rossi"
                 autoCapitalize="none"
                 spellCheck={false}
                 value={username}
