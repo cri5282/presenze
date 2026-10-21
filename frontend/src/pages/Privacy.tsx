@@ -55,8 +55,9 @@ export default function PrivacyPage() {
           <ul>
             <li>
               <strong>Dati dell'account</strong>: username, nome e cognome, ruolo e stato
-              dell'account. Le credenziali sono gestite da Firebase Authentication; la password
-              non è mai visibile al gestore dell'app.
+              dell'account. Le credenziali sono gestite da Firebase Authentication; le password
+              non sono salvate nell'app. L'amministratore imposta la password iniziale e può
+              reimpostarla, ma non può leggerla dopo che l'utente l'ha cambiata.
             </li>
             <li>
               <strong>Eventi del calendario condiviso</strong>: titolo, data e ora, luogo,
