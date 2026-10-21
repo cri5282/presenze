@@ -39,9 +39,9 @@ def stats(
     ).all()
 
     now = utcnow()
-    totals = {"present": 0, "absent": 0, "excused": 0, "unmarked": 0}
+    totals = {"present": 0, "absent": 0, "unmarked": 0}
     groups: dict[str, dict[str, int]] = defaultdict(
-        lambda: {"present": 0, "absent": 0, "excused": 0, "unmarked": 0}
+        lambda: {"present": 0, "absent": 0, "unmarked": 0}
     )
     labels: dict[str, str] = {}
 
@@ -51,7 +51,7 @@ def stats(
         group = groups[key]
         if attendance is not None:
             status = attendance.status
-            if status not in ("present", "absent", "excused"):
+            if status not in ("present", "absent"):
                 status = "absent"
             totals[status] += 1
             group[status] += 1
@@ -59,13 +59,13 @@ def stats(
             totals["unmarked"] += 1
             group["unmarked"] += 1
 
-    marked = totals["present"] + totals["absent"] + totals["excused"]
+    marked = totals["present"] + totals["absent"]
     total = marked + totals["unmarked"]
     rate = round(totals["present"] / marked * 100, 1) if marked else 0.0
 
     group_stats: list[GroupStats] = []
     for key, group in groups.items():
-        g_marked = group["present"] + group["absent"] + group["excused"]
+        g_marked = group["present"] + group["absent"]
         g_total = g_marked + group["unmarked"]
         if g_total == 0:
             continue
@@ -74,7 +74,6 @@ def stats(
                 title=labels[key],
                 present=group["present"],
                 absent=group["absent"],
-                excused=group["excused"],
                 unmarked=group["unmarked"],
                 total=g_total,
                 rate=round(group["present"] / g_marked * 100, 1) if g_marked else 0.0,
@@ -88,7 +87,6 @@ def stats(
         range_to=end,
         present=totals["present"],
         absent=totals["absent"],
-        excused=totals["excused"],
         unmarked=totals["unmarked"],
         marked=marked,
         total=total,

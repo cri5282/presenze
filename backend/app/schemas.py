@@ -3,7 +3,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-AttendanceStatus = Literal["present", "absent", "excused"]
+AttendanceStatus = Literal["present", "absent"]
 
 
 class UserOut(BaseModel):
@@ -75,7 +75,6 @@ class GroupStats(BaseModel):
     title: str
     present: int
     absent: int
-    excused: int
     unmarked: int
     total: int
     rate: float
@@ -86,7 +85,6 @@ class StatsOut(BaseModel):
     range_to: datetime
     present: int
     absent: int
-    excused: int
     unmarked: int
     marked: int
     total: int

@@ -105,7 +105,7 @@ class Attendance(Base):
     event_id: Mapped[int] = mapped_column(
         ForeignKey("events.id", ondelete="CASCADE"), unique=True, index=True
     )
-    status: Mapped[str] = mapped_column(String(16))  # present | absent | excused
+    status: Mapped[str] = mapped_column(String(16))  # present | absent
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Orari effettivi in formato HH:MM, facoltativi: servono per entrate posticipate
     # e uscite anticipate. Sono separati dagli orari dell'evento Google.

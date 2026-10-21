@@ -60,7 +60,7 @@ def main() -> None:
             (-4, 9, 0, 11, 0, "Informatica", "Lab. informatico", "present"),
             (-5, 11, 0, 13, 0, "Inglese", "Aula 1A", "absent"),
             (-6, 8, 30, 10, 0, "Matematica", "Aula 3B", "present"),
-            (-7, 14, 0, 16, 0, "Storia", "Aula 2C", "excused"),
+            (-7, 14, 0, 16, 0, "Storia", "Aula 2C", "absent"),
             # prossimi giorni
             (1, 8, 30, 10, 0, "Matematica", "Aula 3B", None),
             (1, 10, 15, 11, 45, "Fisica", "Laboratorio", None),
