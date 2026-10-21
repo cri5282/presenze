@@ -24,3 +24,11 @@ frontend/.vite/
 
 # Logs
 *.log
+
+# Firebase / migrazione (contiene dati personali e credenziali)
+migration/firebase-export.json
+migration/bootstrap-credentials.txt
+scripts/node_modules/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
