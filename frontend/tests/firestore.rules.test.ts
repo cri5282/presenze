@@ -195,6 +195,19 @@ describe("Firestore security rules", () => {
     );
   });
 
+  it("consente le presenze a un profilo senza il campo mustChangePassword", async () => {
+    await testEnv.withSecurityRulesDisabled(async (context) => {
+      const db = context.firestore();
+      const { mustChangePassword: _omit, ...legacy } = profile("legacy", "user");
+      await setDoc(doc(db, "users", "legacy"), legacy);
+      await setDoc(doc(db, "authUids", "legacyUid"), { username: "legacy" });
+    });
+    const db = testEnv.authenticatedContext("legacyUid").firestore();
+    await assertSucceeds(
+      setDoc(doc(db, "attendance", "legacy__event1"), attendance("legacy", "event1", "present")),
+    );
+  });
+
   it("blocca gli utenti disattivati", async () => {
     const db = testEnv.authenticatedContext(INACTIVE).firestore();
     await assertFails(getDoc(doc(db, "events", "event1")));

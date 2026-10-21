@@ -28,7 +28,7 @@ async def _periodic_sync() -> None:
 async def lifespan(_app: FastAPI):
     init_db()
     task = asyncio.create_task(_periodic_sync())
-    logger.info("Presenze API avviata")
+    logger.info("Registro API avviata")
     try:
         yield
     finally:
@@ -38,7 +38,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title="Presenze API",
+    title="Registro API",
     description="Registro personale delle presenze collegato a Google Calendar",
     version="0.1.0",
     lifespan=lifespan,

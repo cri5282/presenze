@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 export function Spinner({ size = 20 }: { size?: number }) {
   return (
@@ -8,6 +9,24 @@ export function Spinner({ size = 20 }: { size?: number }) {
       role="img"
       aria-label="Caricamento"
     />
+  );
+}
+
+export function PasswordInput(props: Omit<InputHTMLAttributes<HTMLInputElement>, "type">) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="password-field">
+      <input {...props} type={visible ? "text" : "password"} />
+      <button
+        type="button"
+        className="password-toggle"
+        onClick={() => setVisible((v) => !v)}
+        aria-label={visible ? "Nascondi password" : "Mostra password"}
+        tabIndex={-1}
+      >
+        {visible ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
   );
 }
 

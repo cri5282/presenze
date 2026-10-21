@@ -55,7 +55,7 @@ service cloud.firestore {
     }
 
     function canMark() {
-      return isActive() && profile().mustChangePassword == false;
+      return isActive() && profile().get('mustChangePassword', false) == false;
     }
 
     function validAttendance() {

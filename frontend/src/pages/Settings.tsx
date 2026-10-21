@@ -20,7 +20,7 @@ import { api } from "../data";
 import { friendlyError } from "../errors";
 import { isGoogleConfigured } from "../firebase";
 import { fmtDateTime, timeAgo } from "../date";
-import { Spinner } from "../components/ui";
+import { PasswordInput, Spinner } from "../components/ui";
 import type { CalendarInfo } from "../types";
 
 export default function SettingsPage() {
@@ -212,8 +212,7 @@ export default function SettingsPage() {
           <div className="form-grid">
             <label className="field">
               <span>Password attuale</span>
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="current-password"
                 value={currentPassword}
                 onChange={(event) => setCurrentPassword(event.target.value)}
@@ -222,10 +221,9 @@ export default function SettingsPage() {
             </label>
             <label className="field">
               <span>Nuova password</span>
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
-                minLength={10}
+                minLength={4}
                 value={newPassword}
                 onChange={(event) => setNewPassword(event.target.value)}
                 required
@@ -233,10 +231,9 @@ export default function SettingsPage() {
             </label>
             <label className="field">
               <span>Ripeti nuova password</span>
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
-                minLength={10}
+                minLength={4}
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 required
@@ -464,8 +461,7 @@ export default function SettingsPage() {
                 </p>
                 <label className="field">
                   <span>Password attuale</span>
-                  <input
-                    type="password"
+                  <PasswordInput
                     autoComplete="current-password"
                     value={deletePassword}
                     onChange={(event) => setDeletePassword(event.target.value)}
@@ -514,7 +510,7 @@ export default function SettingsPage() {
         </section>
       ) : null}
 
-      <p className="version-note">Presenze · Firebase · versione 0.2.0</p>
+      <p className="version-note">Registro · Firebase · versione 0.2.0</p>
     </div>
   );
 }

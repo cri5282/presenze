@@ -8,7 +8,7 @@ export function LogoMark({ size = 40 }: { size?: number }) {
       width={size}
       height={size}
       role="img"
-      aria-label="Presenze"
+      aria-label="Registro"
       className="logo-mark"
     >
       <defs>

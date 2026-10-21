@@ -128,8 +128,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (currentPassword: string, newPassword: string) => {
       const firebaseUser = requireAuth().currentUser;
       if (!firebaseUser?.email) throw new Error("Sessione non valida: effettua di nuovo l'accesso.");
-      if (newPassword.length < 10) {
-        throw new Error("La nuova password deve contenere almeno 10 caratteri.");
+      if (newPassword.length < 4) {
+        throw new Error("La nuova password deve contenere almeno 4 caratteri.");
       }
       if (newPassword === currentPassword) {
         throw new Error("La nuova password deve essere diversa da quella attuale.");

@@ -8,7 +8,7 @@ const AUTH_MESSAGES: Record<string, string> = {
   "auth/too-many-requests": "Troppi tentativi. Attendi qualche minuto e riprova.",
   "auth/network-request-failed": "Connessione non disponibile. Controlla la rete e riprova.",
   "auth/requires-recent-login": "Per questa operazione devi reinserire la password attuale.",
-  "auth/weak-password": "La nuova password è troppo debole: usa almeno 10 caratteri.",
+  "auth/weak-password": "La nuova password è troppo debole: Firebase richiede almeno 6 caratteri.",
   "auth/email-already-in-use": "Questo account esiste già. Riprova o contatta l'amministratore.",
   "auth/operation-not-allowed": "Il provider Email/Password non è abilitato nel progetto Firebase.",
   "auth/user-disabled": "Questo account è stato disabilitato.",

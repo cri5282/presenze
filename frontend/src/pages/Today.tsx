@@ -7,7 +7,7 @@ import { useToast } from "../toast";
 import EventCard from "../components/EventCard";
 import { EmptyState, ErrorBanner } from "../components/ui";
 import { addDays, allDayIncludes, fmtFullDate, greeting, localDateKey, startOfDay, timeAgo } from "../date";
-import type { AttendanceStatus, EventItem } from "../types";
+import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
 
 export default function TodayPage() {
   const { user } = useAuth();
@@ -48,13 +48,13 @@ export default function TodayPage() {
   const counts = useMemo(() => {
     const result = { present: 0, absent: 0, excused: 0 };
     for (const event of timed) {
-      if (event.attendance) result[event.attendance.status] += 1;
+      if (event.attendance && !isCancelled(event)) result[event.attendance.status] += 1;
     }
     return result;
   }, [timed]);
 
   const unmarkedStarted = timed.filter(
-    (event) => !event.attendance && new Date(event.start).getTime() <= Date.now(),
+    (event) => !event.attendance && !isCancelled(event) && new Date(event.start).getTime() <= Date.now(),
   );
 
   const firstName = user?.name?.split(" ")[0] || "studente";

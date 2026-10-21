@@ -50,7 +50,7 @@ export default function Layout() {
         <div className="brand">
           <LogoMark size={40} />
           <div>
-            <strong>Presenze</strong>
+            <strong>Registro</strong>
             <span>{isAdmin ? "Amministrazione" : "Registro personale"}</span>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function Layout() {
         <header className="topbar">
           <div className="topbar-brand">
             <LogoMark size={30} />
-            <span>Presenze</span>
+            <span>Registro</span>
           </div>
           <div className="topbar-actions">
             {isAdmin ? (

@@ -3,7 +3,7 @@ import { KeyRound, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "../auth";
 import { friendlyError } from "../errors";
 import { LogoMark } from "../components/Logo";
-import { Spinner } from "../components/ui";
+import { PasswordInput, Spinner } from "../components/ui";
 
 export default function ChangePasswordPage() {
   const { user, changePassword, logout } = useAuth();
@@ -49,7 +49,7 @@ export default function ChangePasswordPage() {
           <ShieldCheck size={18} />
           <span>
             La password iniziale è conosciuta dall'amministratore. Scegline una personale di
-            almeno 10 caratteri.
+            almeno 4 caratteri.
           </span>
         </div>
 
@@ -62,8 +62,7 @@ export default function ChangePasswordPage() {
         <form className="login-form" onSubmit={(event) => void submit(event)}>
           <label className="field">
             <span>Password attuale</span>
-            <input
-              type="password"
+            <PasswordInput
               autoComplete="current-password"
               value={current}
               onChange={(event) => setCurrent(event.target.value)}
@@ -72,10 +71,9 @@ export default function ChangePasswordPage() {
           </label>
           <label className="field">
             <span>Nuova password</span>
-            <input
-              type="password"
+            <PasswordInput
               autoComplete="new-password"
-              minLength={10}
+              minLength={4}
               value={next}
               onChange={(event) => setNext(event.target.value)}
               required
@@ -83,10 +81,9 @@ export default function ChangePasswordPage() {
           </label>
           <label className="field">
             <span>Ripeti la nuova password</span>
-            <input
-              type="password"
+            <PasswordInput
               autoComplete="new-password"
-              minLength={10}
+              minLength={4}
               value={confirm}
               onChange={(event) => setConfirm(event.target.value)}
               required

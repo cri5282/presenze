@@ -23,18 +23,19 @@ import {
   updateUser,
 } from "./users";
 import { friendlyError } from "./errors";
-import type {
-  Attendance,
-  AttendanceStatus,
-  BulkCreateResult,
-  CalendarInfo,
-  CalendarSettings,
-  CreatedUser,
-  EventItem,
-  Stats,
-  SyncResult,
-  SyncStatus,
-  User,
+import {
+  isCancelled,
+  type Attendance,
+  type AttendanceStatus,
+  type BulkCreateResult,
+  type CalendarInfo,
+  type CalendarSettings,
+  type CreatedUser,
+  type EventItem,
+  type Stats,
+  type SyncResult,
+  type SyncStatus,
+  type User,
 } from "./types";
 import {
   connectGoogle,
@@ -155,7 +156,7 @@ function computeStats(
   const groups = new Map<string, { title: string; present: number; absent: number; excused: number; unmarked: number }>();
 
   for (const event of events) {
-    if (event.all_day) continue;
+    if (event.all_day || isCancelled(event)) continue;
     if (!overlaps(event, from, to)) continue;
     const key = event.title.trim().toLocaleLowerCase("it") || "(senza titolo)";
     const group = groups.get(key) ?? {

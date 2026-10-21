@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Presenze"
+    app_name: str = "Registro"
     database_url: str = "sqlite:///./data/presenze.db"
 
     # Genera con: python -c "import secrets; print(secrets.token_urlsafe(48))"

@@ -1,4 +1,8 @@
 export type AttendanceStatus = "present" | "absent" | "excused";
+
+export function isCancelled(event: { title: string }): boolean {
+  return event.title.toUpperCase().includes("ANNULLATA");
+}
 export type UserRole = "admin" | "user";
 
 export interface Attendance {

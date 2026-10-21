@@ -1,4 +1,4 @@
-# Presenze
+# Registro
 
 Registro condiviso delle presenze della classe, pubblicato come sito statico su **GitHub Pages** e basato su **Firebase Authentication + Cloud Firestore**. Il calendario delle lezioni è unico per tutti e viene importato dal Google Calendar dell'amministratore; ogni studente vede e modifica soltanto le proprie presenze.
 
@@ -59,7 +59,7 @@ Le regole in [`firestore.rules`](firestore.rules) consentono agli utenti attivi 
   username.2026!
   ```
 
-  Al primo accesso l'app obbliga a sceglierne una personale di almeno 10 caratteri.
+  Al primo accesso l'app obbliga a sceglierne una personale di almeno 4 caratteri.
 - Il reset password da parte dell'amministratore crea un nuovo account Firebase Authentication, rimappa lo username e impone di nuovo il cambio password. Il vecchio account Auth perde la mappatura e quindi l'accesso ai dati.
 - La disattivazione impedisce il login e l'accesso alle regole Firestore.
 - L'eliminazione da parte dell'amministratore cancella profilo, presenze e mappatura. Il record Auth può restare orfano nel progetto Firebase e va ripulito dalla Console, se necessario.

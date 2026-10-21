@@ -1,5 +1,5 @@
 /* =========================================================
-   Presenze — design system
+   Registro — design system
    ========================================================= */
 
 :root {
@@ -881,6 +881,16 @@ code {
 
 .event-card.attendance-excused::before {
   background: var(--amber);
+}
+
+.event-card.is-cancelled {
+  opacity: 0.45;
+  border-style: dashed;
+}
+
+.badge-cancelled {
+  background: var(--surface-2);
+  color: var(--faint);
 }
 
 .event-time {
@@ -2495,6 +2505,34 @@ code {
 .field textarea:focus {
   border-color: color-mix(in srgb, var(--accent) 58%, transparent);
   box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.password-field {
+  position: relative;
+  display: flex;
+}
+
+.password-field input {
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 38px;
+  display: grid;
+  place-items: center;
+  background: none;
+  border: none;
+  border-radius: 0 9px 9px 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--text);
 }
 
 .field input:disabled,

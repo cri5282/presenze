@@ -18,7 +18,7 @@ import {
   startOfMonth,
   WEEKDAYS,
 } from "../date";
-import type { AttendanceStatus, EventItem } from "../types";
+import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
 
 const DOT_ORDER = ["absent", "excused", "present", "unmarked"] as const;
 type DotStatus = (typeof DOT_ORDER)[number];
@@ -29,7 +29,7 @@ function dayDots(events: EventItem[]): { dots: DotStatus[]; allDay: boolean } {
   for (const event of events) {
     if (event.all_day) {
       allDay = true;
-    } else {
+    } else if (!isCancelled(event)) {
       statuses.add(event.attendance?.status ?? "unmarked");
     }
   }

@@ -12,7 +12,7 @@ import { useAuth } from "../auth";
 import { api } from "../data";
 import { friendlyError } from "../errors";
 import { isFirebaseConfigured } from "../firebase";
-import { Spinner } from "../components/ui";
+import { PasswordInput, Spinner } from "../components/ui";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -61,7 +61,7 @@ export default function LoginPage() {
         <div className="login-brand">
           <LogoMark size={60} />
           <div>
-            <h1>Presenze</h1>
+            <h1>Registro</h1>
             <p>Il registro condiviso della classe, con i dati di ognuno separati.</p>
           </div>
         </div>
@@ -106,8 +106,7 @@ export default function LoginPage() {
           </label>
           <label className="field">
             <span>Password</span>
-            <input
-              type="password"
+            <PasswordInput
               autoComplete="current-password"
               placeholder="La tua password"
               value={password}

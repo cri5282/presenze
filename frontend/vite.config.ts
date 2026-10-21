@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => {
         registerType: "autoUpdate",
         includeAssets: ["favicon.svg", "icons/apple-touch-icon.png"],
         manifest: {
-          name: "Presenze",
-          short_name: "Presenze",
+          name: "Registro",
+          short_name: "Registro",
           description: "Registro condiviso delle presenze della classe",
           lang: "it",
           theme_color: "#0b0d12",

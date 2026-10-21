@@ -4,7 +4,7 @@ import { LogoMark } from "../components/Logo";
 
 const LAST_UPDATED = "21 ottobre 2026";
 const controller =
-  import.meta.env.VITE_DATA_CONTROLLER?.trim() || "il gestore di questa istanza Presenze";
+  import.meta.env.VITE_DATA_CONTROLLER?.trim() || "il gestore di questa istanza Registro";
 const contact = import.meta.env.VITE_PRIVACY_CONTACT_EMAIL?.trim();
 
 export default function PrivacyPage() {
@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <header className="legal-top">
         <Link to="/" className="legal-brand">
           <LogoMark size={40} />
-          <span>Presenze</span>
+          <span>Registro</span>
         </Link>
         <Link to="/" className="button button-ghost button-small">
           <ArrowLeft size={15} /> Torna all'app
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         <p className="legal-meta">Ultimo aggiornamento: {LAST_UPDATED}</p>
 
         <p className="legal-intro">
-          Presenze è un registro condiviso delle lezioni. Questa informativa spiega quali dati
+          Registro è un registro condiviso delle lezioni. Questa informativa spiega quali dati
           vengono trattati, perché, per quanto tempo e come puoi esercitare i tuoi diritti.
         </p>
 
@@ -42,10 +42,10 @@ export default function PrivacyPage() {
               <a href={`mailto:${contact}`}>{contact}</a>.
             </p>
           ) : (
-            <p>Per esercitare i tuoi diritti, contatta il gestore dell'istanza Presenze.</p>
+            <p>Per esercitare i tuoi diritti, contatta il gestore dell'istanza Registro.</p>
           )}
           <p>
-            Se usi Presenze nell'ambito di un'attività scolastica, possono applicarsi anche le
+            Se usi Registro nell'ambito di un'attività scolastica, possono applicarsi anche le
             informative e le policy della tua scuola.
           </p>
         </section>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
             <ShieldCheck size={18} /> 4. Uso dei dati Google
           </h2>
           <p>
-            L'uso da parte di Presenze delle informazioni ricevute dalle API Google rispetta la{" "}
+            L'uso da parte di Registro delle informazioni ricevute dalle API Google rispetta la{" "}
             <a
               href="https://developers.google.com/terms/api-services-user-data-policy"
               target="_blank"
@@ -144,7 +144,7 @@ export default function PrivacyPage() {
         <section className="legal-section">
           <h2>6. Cookie e memoria locale</h2>
           <p>
-            Presenze non usa cookie pubblicitari, analytics o tracker di terze parti. Firebase
+            Registro non usa cookie pubblicitari, analytics o tracker di terze parti. Firebase
             Authentication conserva la sessione nel browser (IndexedDB/localStorage) per mantenere
             l'accesso; la rimozione dei dati del sito o il logout interrompono la sessione.
           </p>
@@ -203,13 +203,13 @@ export default function PrivacyPage() {
         </section>
 
         <p className="legal-note">
-          Presenze è uno strumento personale e non sostituisce il registro ufficiale della scuola.
+          Registro è uno strumento personale e non sostituisce il registro ufficiale della scuola.
           Le presenze inserite nell'app non hanno valore certificativo.
         </p>
       </main>
 
       <p className="legal-footer">
-        <Link to="/">Presenze</Link> · Informativa privacy
+        <Link to="/">Registro</Link> · Informativa privacy
       </p>
     </div>
   );

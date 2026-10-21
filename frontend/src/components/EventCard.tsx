@@ -1,7 +1,7 @@
 import { Check, Clock3, ExternalLink, FileText, MapPin, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { fmtTime } from "../date";
-import type { AttendanceStatus, EventItem } from "../types";
+import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
 
 const OPTIONS: {
   value: AttendanceStatus;
@@ -36,6 +36,7 @@ export default function EventCard({
   compact = false,
 }: Props) {
   const active = event.attendance?.status;
+  const cancelled = isCancelled(event);
   const isPast = new Date(event.end).getTime() < Date.now();
   const time = event.all_day ? "Tutto il giorno" : fmtTime(event.start);
   const end = event.all_day ? "" : fmtTime(event.end);
@@ -98,9 +99,10 @@ export default function EventCard({
       className={[
         "event-card",
         event.all_day ? "all-day" : "",
+        cancelled ? "is-cancelled" : "",
         active ? `attendance-${active}` : "",
         compact ? "compact" : "",
-        isPast && !active ? "is-unmarked" : "",
+        isPast && !active && !cancelled ? "is-unmarked" : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -114,7 +116,9 @@ export default function EventCard({
         <div className="event-heading">
           <h3 title={event.title}>{event.title}</h3>
           <div className="event-badges">
-            {isPast && !active && !event.all_day ? (
+            {cancelled ? (
+              <span className="badge badge-cancelled">Annullata</span>
+            ) : isPast && !active && !event.all_day ? (
               <span className="badge badge-warn">Da segnare</span>
             ) : null}
             {event.html_link ? (
@@ -144,7 +148,7 @@ export default function EventCard({
           ) : null}
         </div>
 
-        {!event.all_day ? (
+        {!event.all_day && !cancelled ? (
           <>
             <div className="status-group" role="group" aria-label={`Presenza per ${event.title}`}>
               {OPTIONS.map((option) => {
