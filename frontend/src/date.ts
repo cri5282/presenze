@@ -80,6 +80,12 @@ export function fmtTime(iso: string): string {
   );
 }
 
+// Confronto lessicografico: fmtTime produce sempre "HH:MM" a 24 ore con zero
+// iniziale, quindi l'ordinamento delle stringhe coincide con quello temporale.
+export function isTimeInRange(value: string, from: string, until: string): boolean {
+  return value >= from && value <= until;
+}
+
 export function fmtEventRange(event: { start: string; end: string; all_day: boolean }): string {
   if (event.all_day) return "Tutto il giorno";
   const start = fmtTime(event.start);

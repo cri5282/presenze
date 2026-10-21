@@ -1,6 +1,6 @@
 import { Check, Clock3, ExternalLink, MapPin, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
-import { fmtTime } from "../date";
+import { fmtTime, isTimeInRange } from "../date";
 import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
 
 const OPTIONS: {
@@ -75,6 +75,11 @@ export default function EventCard({
     formEvent.preventDefault();
     const entry = entryTime || null;
     const exit = exitTime || null;
+    const outOfRange = (value: string) => !isTimeInRange(value, time, end);
+    if ((entry && outOfRange(entry)) || (exit && outOfRange(exit))) {
+      setTimeError(`Gli orari devono essere compresi tra ${time} e ${end}.`);
+      return;
+    }
     if (entry && exit && entry >= exit) {
       setTimeError("L'orario di uscita deve essere successivo a quello di entrata.");
       return;
@@ -235,6 +240,8 @@ export default function EventCard({
                         <span>Entrata</span>
                         <input
                           type="time"
+                          min={time}
+                          max={end}
                           value={entryTime}
                           onChange={(changeEvent) => setEntryTime(changeEvent.target.value)}
                           disabled={busy}
@@ -245,6 +252,8 @@ export default function EventCard({
                         <span>Uscita</span>
                         <input
                           type="time"
+                          min={time}
+                          max={end}
                           value={exitTime}
                           onChange={(changeEvent) => setExitTime(changeEvent.target.value)}
                           disabled={busy}

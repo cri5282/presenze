@@ -11,6 +11,7 @@ import {
   type QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { requireDb } from "./firebase";
+import { fmtTime, isTimeInRange } from "./date";
 import { getCachedEvents, setCachedEvents } from "./cache";
 import { requireSessionUsername } from "./session";
 import {
@@ -238,6 +239,18 @@ export const api = {
     const exit = times ? times.exit_time : existing?.exit_time ?? null;
     if (entry && exit && entry >= exit) {
       throw new Error("L'orario di uscita deve essere successivo a quello di entrata.");
+    }
+    // Solo quando l'utente modifica gli orari: un record storico fuori range
+    // non deve impedire il semplice cambio di stato.
+    if (times) {
+      const from = fmtTime(event.start);
+      const until = fmtTime(event.end);
+      if (
+        (entry && !isTimeInRange(entry, from, until)) ||
+        (exit && !isTimeInRange(exit, from, until))
+      ) {
+        throw new Error(`Gli orari devono essere compresi tra ${from} e ${until}.`);
+      }
     }
 
     const attendance: Attendance = {
