@@ -50,7 +50,7 @@ Le regole in [`firestore.rules`](firestore.rules) consentono agli utenti attivi 
 
 - L'amministratore viene creato dallo script di bootstrap. Username predefinito: `admin`. La password viene stampata dallo script o fornita con `ADMIN_PASSWORD`.
 - Gli account degli studenti vengono creati dal pannello **Utenti**.
-- Lo username viene ricavato da “Nome e cognome” (es. `Nicolò Simonini` → `nicolo.simonini`) e può essere indicato manualmente.
+- Lo username viene ricavato da “Nome e cognome” (es. `Mario Rossi` → `mario.rossi`) e può essere indicato manualmente.
 - La password iniziale è:
 
   ```text
@@ -96,7 +96,7 @@ Apri <http://localhost:5173>. Credenziali demo:
 
 ```text
 admin / admin.test.2026!
-nicolo.simonini / nicolo.simonini.2026!
+mario.rossi / mario.rossi.2026!
 ```
 
 La UI degli emulatori è su <http://127.0.0.1:4000>.
