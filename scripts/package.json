@@ -1,0 +1,11 @@
+{
+  "name": "presenze-firebase-bootstrap",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bootstrap": "node bootstrap-firebase.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.6.0"
+  }
+}
