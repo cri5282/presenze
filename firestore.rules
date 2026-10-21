@@ -1,0 +1,138 @@
+rules_version = '2';
+
+// Presenze — Firestore Security Rules
+//
+// Modello:
+//   users/{username}          profilo e ruolo (admin/user)
+//   authUids/{uid}            mappa l'UID Firebase Auth allo username
+//   loginDirectory/{username} directory pubblica minima per il login (email + attivo)
+//   events/{eventId}          calendario condiviso, scritto solo dall'admin
+//   attendance/{username}__{eventId}
+//   settings/calendar         calendari scelti e ultima sync
+//   syncState/{calendarId}    syncToken Google, solo admin
+//
+// Gli utenti normali possono leggere il calendario condiviso e scrivere
+// esclusivamente le proprie presenze. L'amministratore gestisce utenti,
+// eventi, impostazioni e sincronizzazione.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function mappingPath() {
+      return /databases/$(database)/documents/authUids/$(request.auth.uid);
+    }
+
+    function hasMapping() {
+      return signedIn() && exists(mappingPath());
+    }
+
+    function username() {
+      return get(mappingPath()).data.username;
+    }
+
+    function profilePath() {
+      return /databases/$(database)/documents/users/$(username());
+    }
+
+    function hasProfile() {
+      return hasMapping() && exists(profilePath());
+    }
+
+    function profile() {
+      return get(profilePath()).data;
+    }
+
+    function isActive() {
+      return hasProfile() && profile().active == true;
+    }
+
+    function isAdmin() {
+      return isActive() && profile().role == 'admin';
+    }
+
+    function canMark() {
+      return isActive() && profile().mustChangePassword == false;
+    }
+
+    function validAttendance() {
+      let data = request.resource.data;
+      return data.keys().hasOnly([
+          'username', 'eventId', 'status', 'note', 'entry_time', 'exit_time', 'updated_at'
+        ])
+        && data.username is string
+        && data.eventId is string
+        && data.status in ['present', 'absent', 'excused']
+        && exists(/databases/$(database)/documents/events/$(data.eventId))
+        && data.updated_at is string;
+    }
+
+    // Directory pubblica: serve solo a trasformare lo username in email
+    // sintetica prima del login. Non è possibile elencare tutti gli utenti.
+    match /loginDirectory/{name} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if isAdmin();
+      allow delete: if isAdmin()
+        || (signedIn()
+          && exists(/databases/$(database)/documents/users/$(name))
+          && get(/databases/$(database)/documents/users/$(name)).data.authUid == request.auth.uid
+          && get(/databases/$(database)/documents/users/$(name)).data.role != 'admin');
+    }
+
+    match /authUids/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update: if isAdmin();
+      allow delete: if isAdmin()
+        || (signedIn() && request.auth.uid == uid);
+    }
+
+    match /users/{name} {
+      allow read: if isAdmin() || (isActive() && username() == name);
+      allow create: if isAdmin();
+      allow update: if isAdmin()
+        || (isActive() && username() == name
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['mustChangePassword'])
+          && request.resource.data.mustChangePassword == false);
+      allow delete: if isAdmin()
+        || (signedIn()
+          && resource.data.authUid == request.auth.uid
+          && resource.data.role != 'admin');
+    }
+
+    match /events/{eventId} {
+      allow read: if isActive();
+      allow write: if isAdmin();
+    }
+
+    match /attendance/{attendanceId} {
+      allow read: if isAdmin() || (isActive() && resource.data.username == username());
+      allow create: if resource == null
+        && canMark()
+        && (isAdmin() || request.resource.data.username == username())
+        && validAttendance();
+      allow update: if resource != null
+        && request.resource != null
+        && canMark()
+        && (isAdmin()
+          || (resource.data.username == username()
+            && request.resource.data.username == username()))
+        && validAttendance();
+      allow delete: if resource != null
+        && canMark()
+        && (isAdmin() || resource.data.username == username());
+    }
+
+    match /settings/{docId} {
+      allow read: if isActive();
+      allow write: if isAdmin();
+    }
+
+    match /syncState/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
