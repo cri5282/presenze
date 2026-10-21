@@ -99,7 +99,7 @@ admin / admin.test.2026!
 nicolo.simonini / nicolo.simonini.2026!
 ```
 
-La Emulator UI è su <http://127.0.0.1:4000>.
+La UI degli emulatori è su <http://127.0.0.1:4000>.
 
 `frontend/.env.development` attiva automaticamente gli emulatori. I test delle regole cancellano i dati Firestore dell'emulatore: dopo `npm run test:rules` esegui di nuovo il bootstrap.
 
