@@ -32,3 +32,6 @@ scripts/node_modules/
 frontend/.env
 frontend/.env.local
 frontend/.env.production
+
+# Credenziali initiali generate localmente (non committare)
+migration/credenziali-iniziali-2026.txt
