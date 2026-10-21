@@ -223,7 +223,7 @@ export default function SettingsPage() {
               <span>Nuova password</span>
               <PasswordInput
                 autoComplete="new-password"
-                minLength={4}
+                minLength={6}
                 value={newPassword}
                 onChange={(event) => setNewPassword(event.target.value)}
                 required
@@ -233,7 +233,7 @@ export default function SettingsPage() {
               <span>Ripeti nuova password</span>
               <PasswordInput
                 autoComplete="new-password"
-                minLength={4}
+                minLength={6}
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}
                 required

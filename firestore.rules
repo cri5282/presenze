@@ -109,7 +109,8 @@ service cloud.firestore {
     }
 
     match /attendance/{attendanceId} {
-      allow read: if isAdmin() || (isActive() && resource.data.username == username());
+      allow get: if isAdmin() || (isActive() && attendanceId.split('__')[0] == username());
+      allow list: if isAdmin() || (isActive() && resource.data.username == username());
       allow create: if resource == null
         && canMark()
         && (isAdmin() || request.resource.data.username == username())

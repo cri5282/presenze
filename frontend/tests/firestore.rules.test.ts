@@ -195,6 +195,12 @@ describe("Firestore security rules", () => {
     );
   });
 
+  it("consente di leggere la propria presenza non ancora esistente, ma non quella altrui", async () => {
+    const db = testEnv.authenticatedContext(USER1).firestore();
+    await assertSucceeds(getDoc(doc(db, "attendance", "user1__nuovo")));
+    await assertFails(getDoc(doc(db, "attendance", "user2__nuovo")));
+  });
+
   it("consente le presenze a un profilo senza il campo mustChangePassword", async () => {
     await testEnv.withSecurityRulesDisabled(async (context) => {
       const db = context.firestore();

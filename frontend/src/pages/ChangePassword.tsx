@@ -49,7 +49,7 @@ export default function ChangePasswordPage() {
           <ShieldCheck size={18} />
           <span>
             La password iniziale è conosciuta dall'amministratore. Scegline una personale di
-            almeno 4 caratteri.
+            almeno 6 caratteri.
           </span>
         </div>
 
@@ -73,7 +73,7 @@ export default function ChangePasswordPage() {
             <span>Nuova password</span>
             <PasswordInput
               autoComplete="new-password"
-              minLength={4}
+              minLength={6}
               value={next}
               onChange={(event) => setNext(event.target.value)}
               required
@@ -83,7 +83,7 @@ export default function ChangePasswordPage() {
             <span>Ripeti la nuova password</span>
             <PasswordInput
               autoComplete="new-password"
-              minLength={4}
+              minLength={6}
               value={confirm}
               onChange={(event) => setConfirm(event.target.value)}
               required
