@@ -2,7 +2,9 @@
 
 Registro condiviso delle presenze della classe, pubblicato come sito statico su **GitHub Pages** e basato su **Firebase Authentication + Cloud Firestore**. Il calendario delle lezioni è unico per tutti e viene importato dal Google Calendar dell'amministratore; ogni studente vede e modifica soltanto le proprie presenze.
 
-Non serve un server applicativo, un database SQL, Cloud Functions o il piano Blaze. La sincronizzazione con Google Calendar viene eseguita dal browser dell'amministratore, su richiesta.
+Non serve un server applicativo, un database SQL o Cloud Functions. La sincronizzazione con Google Calendar viene eseguita dal browser dell'amministratore, su richiesta.
+
+> **Nota sulla fatturazione:** Firebase Authentication (Identity Platform) richiede un account di fatturazione collegato al progetto, quindi il progetto deve essere sul piano **Blaze**. Con il numero di utenti di una classe l'utilizzo resta ampiamente nei limiti gratuiti e non sono attesi addebiti. Cloud Firestore e GitHub Pages non richiedono Cloud Functions.
 
 ## Funzionalità
 
@@ -116,10 +118,11 @@ I test usano `@firebase/rules-unit-testing` e richiedono l'emulatore Firestore a
 
 ### 1. Progetto Firebase
 
-1. Crea un progetto su <https://console.firebase.google.com/>. Il piano **Spark** è sufficiente: non ci sono Cloud Functions.
-2. Aggiungi un'app Web e copia i valori di configurazione.
-3. Abilita **Authentication → Sign-in method → Email/Password**.
-4. Crea un database **Cloud Firestore** (modalità produzione, area geografica preferita).
+1. Crea un progetto su <https://console.firebase.google.com/>.
+2. Collega un account di fatturazione e passa al piano **Blaze** da **Utilizzo e fatturazione**. È necessario per inizializzare Firebase Authentication; con questo utilizzo non sono attesi addebiti.
+3. Aggiungi un'app Web e copia i valori di configurazione.
+4. Apri **Authentication**, completa l'inizializzazione e abilita **Sign-in method → Email/Password**.
+5. Crea un database **Cloud Firestore** (modalità produzione, area geografica preferita).
 
 La configurazione web di Firebase è pubblica per progettazione: non è un segreto. Non inserire mai nel repository service account, refresh token o password.
 
