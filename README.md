@@ -11,7 +11,7 @@ Non serve un server applicativo, un database SQL o Cloud Functions. La sincroniz
 - Login con **username e password** creati dall'amministratore; nessun login Google per gli studenti.
 - Primo accesso con cambio password obbligatorio.
 - Calendario condiviso della classe, importato in sola lettura da Google Calendar.
-- Presenze, assenze, giustificazioni e orari personali.
+- Presenze, assenze e orari personali.
 - Statistiche personali per periodo e per materia.
 - Pannello amministratore: creazione singola o multipla degli account, reset password, disattivazione, eliminazione e ispezione delle presenze di ogni studente.
 - Un solo amministratore; gli studenti non possono leggere né scrivere le presenze altrui.

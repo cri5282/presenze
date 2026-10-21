@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { ArrowLeft, BarChart3, CalendarOff, Check, FileText, X } from "lucide-react";
+import { ArrowLeft, BarChart3, CalendarOff, Check, X } from "lucide-react";
 import { useAuth } from "../auth";
 import { useSync } from "../sync";
 import { api } from "../data";
@@ -12,7 +12,6 @@ import type { EventItem, Stats, User } from "../types";
 const STATUS_LABEL = {
   present: "Presente",
   absent: "Assente",
-  excused: "Giustificato",
 } as const;
 
 export default function AdminUserPage() {
@@ -130,13 +129,6 @@ export default function AdminUserPage() {
                   </div>
                 </div>
                 <div className="metric-card">
-                  <FileText size={18} />
-                  <div>
-                    <strong>{stats.excused}</strong>
-                    <span>giustificazioni</span>
-                  </div>
-                </div>
-                <div className="metric-card">
                   <BarChart3 size={18} />
                   <div>
                     <strong>{stats.marked ? `${Math.round(stats.rate)}%` : "—"}</strong>
@@ -159,7 +151,7 @@ export default function AdminUserPage() {
                         <div className="group-head">
                           <span className="group-title">{group.title}</span>
                           <span className="group-rate">
-                            {group.present}/{group.present + group.absent + group.excused}
+                            {group.present}/{group.present + group.absent}
                           </span>
                         </div>
                         <div className="bar-track">
@@ -178,7 +170,6 @@ export default function AdminUserPage() {
                           <span>
                             <i className="dot dot-present" /> {group.present}
                             <i className="dot dot-absent" /> {group.absent}
-                            <i className="dot dot-excused" /> {group.excused}
                             {group.unmarked > 0 ? (
                               <>
                                 <i className="dot dot-unmarked" /> {group.unmarked}
@@ -223,7 +214,7 @@ export default function AdminUserPage() {
                           ) : null}
                         </span>
                       </div>
-                      <span className={`badge badge-${attendance.status === "present" ? "ok" : attendance.status === "absent" ? "bad" : "warn"}`}>
+                      <span className={`badge badge-${attendance.status === "present" ? "ok" : "bad"}`}>
                         {STATUS_LABEL[attendance.status]}
                       </span>
                     </div>

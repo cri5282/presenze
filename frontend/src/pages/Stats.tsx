@@ -123,11 +123,6 @@ export default function StatsPage() {
                   <span>Assente</span>
                   <strong>{stats.absent}</strong>
                 </div>
-                <div className="legend-item">
-                  <span className="legend-dot dot-excused" />
-                  <span>Giustificato</span>
-                  <strong>{stats.excused}</strong>
-                </div>
                 {stats.unmarked > 0 ? (
                   <div className="legend-item">
                     <span className="legend-dot dot-unmarked" />
@@ -157,7 +152,7 @@ export default function StatsPage() {
                   <div className="group-head">
                     <span className="group-title">{group.title}</span>
                     <span className="group-rate">
-                      {group.present}/{group.present + group.absent + group.excused}
+                      {group.present}/{group.present + group.absent}
                     </span>
                   </div>
                   <div className="bar-track">
@@ -176,7 +171,6 @@ export default function StatsPage() {
                     <span>
                       <i className="dot dot-present" /> {group.present}
                       <i className="dot dot-absent" /> {group.absent}
-                      <i className="dot dot-excused" /> {group.excused}
                       {group.unmarked > 0 ? (
                         <>
                           <i className="dot dot-unmarked" /> {group.unmarked}

@@ -1,4 +1,4 @@
-export type AttendanceStatus = "present" | "absent" | "excused";
+export type AttendanceStatus = "present" | "absent";
 
 export function isCancelled(event: { title: string }): boolean {
   return event.title.toUpperCase().includes("ANNULLATA");
@@ -59,7 +59,6 @@ export interface GroupStats {
   title: string;
   present: number;
   absent: number;
-  excused: number;
   unmarked: number;
   total: number;
   rate: number;
@@ -70,7 +69,6 @@ export interface Stats {
   range_to: string;
   present: number;
   absent: number;
-  excused: number;
   unmarked: number;
   marked: number;
   total: number;

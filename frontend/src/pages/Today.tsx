@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { CalendarCheck, CheckCheck, CalendarX2 } from "lucide-react";
+import { CalendarCheck, CalendarX2 } from "lucide-react";
 import { api } from "../api";
 import { useAuth } from "../auth";
 import { useSync } from "../sync";
@@ -17,7 +17,6 @@ export default function TodayPage() {
   const [error, setError] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [bulkBusy, setBulkBusy] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -25,8 +24,26 @@ export default function TodayPage() {
     const start = startOfDay(new Date());
     api
       .events(start, addDays(start, 1))
-      .then((data) => {
-        if (alive) setEvents(data);
+      .then(async (data) => {
+        if (!alive) return;
+        const now = Date.now();
+        const toMark = data.filter(
+          (event) =>
+            !event.all_day &&
+            !event.attendance &&
+            !isCancelled(event) &&
+            new Date(event.start).getTime() <= now,
+        );
+        if (toMark.length) {
+          await Promise.allSettled(
+            toMark.map((event) => api.setAttendance(event.id, "present")),
+          );
+          if (!alive) return;
+          const refreshed = await api.events(start, addDays(start, 1));
+          if (alive) setEvents(refreshed);
+        } else {
+          setEvents(data);
+        }
       })
       .catch((err: unknown) => {
         if (!alive) return;
@@ -46,16 +63,12 @@ export default function TodayPage() {
   );
 
   const counts = useMemo(() => {
-    const result = { present: 0, absent: 0, excused: 0 };
+    const result = { present: 0, absent: 0 };
     for (const event of timed) {
       if (event.attendance && !isCancelled(event)) result[event.attendance.status] += 1;
     }
     return result;
   }, [timed]);
-
-  const unmarkedStarted = timed.filter(
-    (event) => !event.attendance && !isCancelled(event) && new Date(event.start).getTime() <= Date.now(),
-  );
 
   const firstName = user?.name?.split(" ")[0] || "studente";
 
@@ -156,23 +169,6 @@ export default function TodayPage() {
     }
   }
 
-  async function markAllPresent() {
-    if (!unmarkedStarted.length) return;
-    setBulkBusy(true);
-    try {
-      await Promise.all(unmarkedStarted.map((event) => api.setAttendance(event.id, "present")));
-      setReload((current) => current + 1);
-      push(
-        `${unmarkedStarted.length} ${unmarkedStarted.length === 1 ? "lezione segnata" : "lezioni segnate"} presente`,
-      );
-    } catch (err) {
-      push(err instanceof Error ? err.message : "Aggiornamento non riuscito", "error");
-    } finally {
-      setBulkBusy(false);
-      setReload((current) => current + 1);
-    }
-  }
-
   return (
     <div className="page">
       <header className="page-header">
@@ -190,9 +186,6 @@ export default function TodayPage() {
           <span className="stat-chip stat-chip-bad">
             <strong>{counts.absent}</strong> assenti
           </span>
-          <span className="stat-chip stat-chip-warn">
-            <strong>{counts.excused}</strong> giustificati
-          </span>
         </div>
       </header>
 
@@ -200,17 +193,6 @@ export default function TodayPage() {
         <span>
           {syncing ? "Sincronizzazione in corso…" : `Aggiornato ${timeAgo(lastSyncAt)}`}
         </span>
-        {unmarkedStarted.length > 0 ? (
-          <button
-            type="button"
-            className="button button-primary button-small"
-            onClick={() => void markAllPresent()}
-            disabled={bulkBusy}
-          >
-            <CheckCheck size={16} />
-            {bulkBusy ? "Salvataggio…" : `Segna tutti presenti (${unmarkedStarted.length})`}
-          </button>
-        ) : null}
       </div>
 
       {error ? <ErrorBanner message={error} onRetry={() => setReload((n) => n + 1)} /> : null}
@@ -250,7 +232,7 @@ export default function TodayPage() {
               <EventCard
                 key={event.id}
                 event={event}
-                busy={busyId === event.id || bulkBusy}
+                busy={busyId === event.id}
                 onSet={(status) => void setStatus(event, status)}
                 onClear={() => void clearStatus(event)}
                 onSaveTimes={(entry, exit) => saveTimes(event, entry, exit)}

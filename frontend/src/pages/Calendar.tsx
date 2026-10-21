@@ -20,7 +20,7 @@ import {
 } from "../date";
 import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
 
-const DOT_ORDER = ["absent", "excused", "present", "unmarked"] as const;
+const DOT_ORDER = ["absent", "present", "unmarked"] as const;
 type DotStatus = (typeof DOT_ORDER)[number];
 
 function dayDots(events: EventItem[]): { dots: DotStatus[]; allDay: boolean } {
@@ -302,9 +302,6 @@ export default function CalendarPage() {
             </span>
             <span>
               <i className="dot dot-absent" /> Assente
-            </span>
-            <span>
-              <i className="dot dot-excused" /> Giustificato
             </span>
             <span>
               <i className="dot dot-unmarked" /> Da segnare

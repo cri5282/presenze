@@ -87,7 +87,7 @@ function eventFromSnapshot(
 function attendanceFromData(data: Record<string, unknown>): Attendance {
   const status = data.status;
   return {
-    status: status === "present" || status === "absent" || status === "excused" ? status : "absent",
+    status: status === "present" || status === "absent" ? status : "absent",
     note: asNullableString(data.note),
     entry_time: asNullableString(data.entry_time),
     exit_time: asNullableString(data.exit_time),
@@ -152,8 +152,8 @@ function computeStats(
   to: Date,
 ): Stats {
   const now = Date.now();
-  const totals = { present: 0, absent: 0, excused: 0, unmarked: 0 };
-  const groups = new Map<string, { title: string; present: number; absent: number; excused: number; unmarked: number }>();
+  const totals = { present: 0, absent: 0, unmarked: 0 };
+  const groups = new Map<string, { title: string; present: number; absent: number; unmarked: number }>();
 
   for (const event of events) {
     if (event.all_day || isCancelled(event)) continue;
@@ -163,7 +163,6 @@ function computeStats(
       title: event.title.trim() || "(Senza titolo)",
       present: 0,
       absent: 0,
-      excused: 0,
       unmarked: 0,
     };
     if (event.attendance) {
@@ -177,18 +176,17 @@ function computeStats(
     groups.set(key, group);
   }
 
-  const marked = totals.present + totals.absent + totals.excused;
+  const marked = totals.present + totals.absent;
   const total = marked + totals.unmarked;
   const rate = marked ? Math.round((totals.present / marked) * 1000) / 10 : 0;
   const groupStats = [...groups.values()]
     .map((group) => {
-      const groupMarked = group.present + group.absent + group.excused;
+      const groupMarked = group.present + group.absent;
       const groupTotal = groupMarked + group.unmarked;
       return {
         title: group.title,
         present: group.present,
         absent: group.absent,
-        excused: group.excused,
         unmarked: group.unmarked,
         total: groupTotal,
         rate: groupMarked ? Math.round((group.present / groupMarked) * 1000) / 10 : 0,
@@ -202,7 +200,6 @@ function computeStats(
     range_to: to.toISOString(),
     present: totals.present,
     absent: totals.absent,
-    excused: totals.excused,
     unmarked: totals.unmarked,
     marked,
     total,

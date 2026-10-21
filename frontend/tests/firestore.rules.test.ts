@@ -240,7 +240,7 @@ describe("Firestore security rules", () => {
     await assertSucceeds(getDoc(doc(db, "attendance", "user1__event1")));
     await assertSucceeds(updateDoc(doc(db, "settings", "calendar"), { calendar_ids: ["primary"] }));
     await assertSucceeds(
-      setDoc(doc(db, "attendance", "user2__event1"), attendance("user2", "event1", "excused")),
+      setDoc(doc(db, "attendance", "user2__event1"), attendance("user2", "event1", "absent")),
     );
   });
 

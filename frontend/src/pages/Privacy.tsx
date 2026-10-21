@@ -66,7 +66,7 @@ export default function PrivacyPage() {
               <strong>sola lettura</strong>.
             </li>
             <li>
-              <strong>Presenze</strong>: stato (presente, assente, giustificato), eventuale nota e
+              <strong>Presenze</strong>: stato (presente, assente), eventuale nota e
               orari facoltativi di entrata e uscita che inserisci tu.
             </li>
             <li>

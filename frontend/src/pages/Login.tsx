@@ -128,7 +128,7 @@ export default function LoginPage() {
         <ul className="login-features">
           <li>
             <CalendarCheck size={17} />
-            <span>Un tap per segnare presente, assente o giustificato</span>
+            <span>Un tap per segnare presente o assente</span>
           </li>
           <li>
             <RefreshCw size={17} />

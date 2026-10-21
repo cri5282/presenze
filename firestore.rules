@@ -65,7 +65,7 @@ service cloud.firestore {
         ])
         && data.username is string
         && data.eventId is string
-        && data.status in ['present', 'absent', 'excused']
+        && data.status in ['present', 'absent']
         && exists(/databases/$(database)/documents/events/$(data.eventId))
         && data.updated_at is string;
     }

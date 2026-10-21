@@ -5,6 +5,7 @@ import {
   Check,
   Copy,
   KeyRound,
+  Pencil,
   Plus,
   RefreshCw,
   ShieldCheck,
@@ -42,6 +43,8 @@ export default function AdminUsersPage() {
   const [bulkErrors, setBulkErrors] = useState<string[]>([]);
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [busyUser, setBusyUser] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState<string | null>(null);
+  const [editNameValue, setEditNameValue] = useState("");
 
   const isAdmin = user?.role === "admin";
 
@@ -142,6 +145,25 @@ export default function AdminUsersPage() {
       push(friendlyError(err, "Aggiornamento non riuscito."), "error");
     } finally {
       setBusyUser(null);
+    }
+  }
+
+  async function submitRename(target: User) {
+    const trimmed = editNameValue.trim();
+    if (!trimmed || trimmed === target.name) {
+      setEditingName(null);
+      return;
+    }
+    setBusyUser(target.username);
+    try {
+      await api.updateUser(target.username, { name: trimmed });
+      setReload((value) => value + 1);
+      push(`Nome aggiornato: ${trimmed}`, "success");
+    } catch (err) {
+      push(friendlyError(err, "Aggiornamento non riuscito."), "error");
+    } finally {
+      setBusyUser(null);
+      setEditingName(null);
     }
   }
 
@@ -407,16 +429,46 @@ export default function AdminUsersPage() {
                 {users.map((item) => (
                   <tr key={item.username}>
                     <td>
-                      <button
-                        type="button"
-                        className="user-name-button"
-                        onClick={() => navigate(`/admin/utenti/${encodeURIComponent(item.username)}`)}
-                      >
-                        {item.name}
-                        {item.role === "admin" ? (
-                          <span className="role-pill">admin</span>
-                        ) : null}
-                      </button>
+                      {editingName === item.username ? (
+                        <form
+                          className="inline-edit"
+                          onSubmit={(event) => { event.preventDefault(); void submitRename(item); }}
+                        >
+                          <input
+                            type="text"
+                            className="inline-edit-input"
+                            value={editNameValue}
+                            onChange={(event) => setEditNameValue(event.target.value)}
+                            onBlur={() => void submitRename(item)}
+                            autoFocus
+                            disabled={busyUser === item.username}
+                          />
+                        </form>
+                      ) : (
+                        <span className="user-name-cell">
+                          <button
+                            type="button"
+                            className="user-name-button"
+                            onClick={() => navigate(`/admin/utenti/${encodeURIComponent(item.username)}`)}
+                          >
+                            {item.name}
+                            {item.role === "admin" ? (
+                              <span className="role-pill">admin</span>
+                            ) : null}
+                          </button>
+                          {item.role !== "admin" ? (
+                            <button
+                              type="button"
+                              className="icon-button icon-button-tiny"
+                              title="Modifica nome"
+                              aria-label="Modifica nome"
+                              onClick={() => { setEditingName(item.username); setEditNameValue(item.name); }}
+                            >
+                              <Pencil size={13} />
+                            </button>
+                          ) : null}
+                        </span>
+                      )}
                     </td>
                     <td>
                       <code>@{item.username}</code>

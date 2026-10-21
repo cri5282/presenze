@@ -1,4 +1,4 @@
-import { Check, Clock3, ExternalLink, FileText, MapPin, X } from "lucide-react";
+import { Check, Clock3, ExternalLink, MapPin, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { fmtTime } from "../date";
 import { isCancelled, type AttendanceStatus, type EventItem } from "../types";
@@ -10,7 +10,6 @@ const OPTIONS: {
 }[] = [
   { value: "present", label: "Presente", icon: Check },
   { value: "absent", label: "Assente", icon: X },
-  { value: "excused", label: "Giustificato", icon: FileText },
 ];
 
 function timeValue(value: string): number {
