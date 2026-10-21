@@ -1,36 +1,13 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, ShieldCheck } from "lucide-react";
 import { LogoMark } from "../components/Logo";
 
-interface PrivacyInfo {
-  data_controller?: string;
-  contact_email?: string;
-}
-
 const LAST_UPDATED = "21 ottobre 2026";
+const controller =
+  import.meta.env.VITE_DATA_CONTROLLER?.trim() || "il gestore di questa istanza Presenze";
+const contact = import.meta.env.VITE_PRIVACY_CONTACT_EMAIL?.trim();
 
 export default function PrivacyPage() {
-  const [info, setInfo] = useState<PrivacyInfo>({});
-
-  useEffect(() => {
-    let alive = true;
-    fetch("/api/health")
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (alive && data?.privacy) setInfo(data.privacy);
-      })
-      .catch(() => {
-        // La pagina resta leggibile anche se il backend non è raggiungibile.
-      });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  const controller = info.data_controller?.trim() || "il gestore di questa istanza Presenze";
-  const contact = info.contact_email?.trim();
-
   return (
     <div className="legal-page">
       <div className="legal-glow" aria-hidden="true" />
@@ -50,7 +27,7 @@ export default function PrivacyPage() {
         <p className="legal-meta">Ultimo aggiornamento: {LAST_UPDATED}</p>
 
         <p className="legal-intro">
-          Presenze è un registro personale delle lezioni. Questa informativa spiega quali dati
+          Presenze è un registro condiviso delle lezioni. Questa informativa spiega quali dati
           vengono trattati, perché, per quanto tempo e come puoi esercitare i tuoi diritti.
         </p>
 
@@ -77,25 +54,28 @@ export default function PrivacyPage() {
           <h2>2. Quali dati trattiamo</h2>
           <ul>
             <li>
-              <strong>Dati dell'account Google</strong>: identificativo Google, nome, indirizzo
-              email e immagine del profilo. Servono per creare e proteggere il tuo account.
+              <strong>Dati dell'account</strong>: username, nome e cognome, ruolo e stato
+              dell'account. Le credenziali sono gestite da Firebase Authentication; la password
+              non è mai visibile al gestore dell'app.
             </li>
             <li>
-              <strong>Eventi del calendario</strong>: titolo, data e ora, luogo, descrizione e link
-              degli eventi dei calendari che scegli di importare. L'app accede a Google Calendar
-              esclusivamente in <strong>sola lettura</strong>.
+              <strong>Eventi del calendario condiviso</strong>: titolo, data e ora, luogo,
+              descrizione e link degli eventi importati dal calendario Google scelto
+              dall'amministratore. L'app accede a Google Calendar esclusivamente in{" "}
+              <strong>sola lettura</strong>.
             </li>
             <li>
               <strong>Presenze</strong>: stato (presente, assente, giustificato), eventuale nota e
               orari facoltativi di entrata e uscita che inserisci tu.
             </li>
             <li>
-              <strong>Dati tecnici</strong>: cookie di sessione, stato OAuth temporaneo e log del
-              server necessari per erogare il servizio e prevenire abusi.
+              <strong>Dati tecnici</strong>: sessione Firebase, log tecnici e informazioni
+              necessarie a erogare il servizio e prevenire abusi.
             </li>
             <li>
-              <strong>Token Google</strong>: il refresh token è conservato cifrato sul server e non
-              viene mai inviato al browser.
+              <strong>Token Google</strong>: l'amministratore ottiene un token di accesso
+              temporaneo nel proprio browser per leggere il calendario. Il token resta in memoria
+              per la durata della sessione e non viene salvato su un server né su Firestore.
             </li>
           </ul>
         </section>
@@ -104,16 +84,16 @@ export default function PrivacyPage() {
           <h2>3. Finalità e base giuridica</h2>
           <p>I dati sono trattati per:</p>
           <ul>
-            <li>mostrarti le lezioni importate dal calendario che hai scelto;</li>
+            <li>mostrarti le lezioni importate dal calendario condiviso;</li>
             <li>registrare le tue presenze e calcolare le tue statistiche personali;</li>
-            <li>mantenere la sessione e sincronizzare i calendari su tuo comando;</li>
+            <li>mantenere la sessione e sincronizzare il calendario su comando dell'amministratore;</li>
             <li>garantire la sicurezza e il corretto funzionamento del servizio.</li>
           </ul>
           <p>
-            La base giuridica è il consenso che esprimi autorizzando l'accesso a Google Calendar e,
-            per i dati necessari a erogare il servizio, l'esecuzione del servizio richiesto. Puoi
-            revocare il consenso in qualsiasi momento cancellando l'account o revocando l'accesso
-            dall'account Google.
+            La base giuridica è il consenso che esprimi autorizzando l'accesso a Google Calendar
+            (solo per l'amministratore) e, per i dati necessari a erogare il servizio,
+            l'esecuzione del servizio richiesto. Puoi revocare il consenso in qualsiasi momento
+            cancellando l'account o revocando l'accesso dall'account Google.
           </p>
         </section>
 
@@ -136,7 +116,8 @@ export default function PrivacyPage() {
             <li>i dati Google Calendar sono usati solo per mostrarti gli eventi e le statistiche;</li>
             <li>non sono venduti, affittati o condivisi con inserzionisti;</li>
             <li>non sono usati per pubblicità o per addestrare modelli di intelligenza artificiale;</li>
-            <li>l'app non crea, modifica o cancella eventi sul tuo calendario.</li>
+            <li>l'app non crea, modifica o cancella eventi sul calendario;</li>
+            <li>solo l'amministratore collega Google; gli altri utenti non autorizzano Google.</li>
           </ul>
         </section>
 
@@ -147,41 +128,38 @@ export default function PrivacyPage() {
             l'account e tutti i dati collegati da <strong>Impostazioni → Eliminazione account</strong>.
           </p>
           <p>
-            La cancellazione rimuove profilo, eventi importati, presenze, stati di sincronizzazione
-            e token Google conservati sul server. Il token viene anche revocato presso Google, se
-            ancora valido. L'operazione non è reversibile.
+            La cancellazione rimuove profilo, presenze, username e mappatura di accesso. Se
+            l'account viene eliminato dall'amministratore, il record di autenticazione Firebase
+            può essere conservato senza profilo e senza alcun accesso ai dati dell'app; verrà
+            rimosso secondo le politiche del progetto Firebase.
           </p>
           <p>
             Eventuali copie di backup possono conservare i dati per il periodo necessario al
-            ripristino, secondo la configurazione del server. I log tecnici sono conservati per il
-            tempo necessario alla gestione della sicurezza.
+            ripristino. I log tecnici sono conservati per il tempo necessario alla gestione della
+            sicurezza.
           </p>
         </section>
 
         <section className="legal-section">
-          <h2>6. Cookie</h2>
-          <p>Presenze usa solo cookie tecnici, necessari al funzionamento:</p>
-          <ul>
-            <li>
-              <code>presenze_session</code>: mantiene la sessione per un massimo di 30 giorni;
-            </li>
-            <li>
-              <code>presenze_oauth_state</code>: protegge il login Google e dura pochi minuti.
-            </li>
-          </ul>
-          <p>Non usiamo cookie pubblicitari, analytics o tracker di terze parti.</p>
+          <h2>6. Cookie e memoria locale</h2>
+          <p>
+            Presenze non usa cookie pubblicitari, analytics o tracker di terze parti. Firebase
+            Authentication conserva la sessione nel browser (IndexedDB/localStorage) per mantenere
+            l'accesso; la rimozione dei dati del sito o il logout interrompono la sessione.
+          </p>
         </section>
 
         <section className="legal-section">
           <h2>7. Destinatari e trasferimenti</h2>
           <p>
-            I dati sono conservati sul server che ospita l'istanza. Possono essere trattati dal
-            fornitore di hosting e da Google per le funzioni di autenticazione e Calendar. Non
-            vendiamo né cediamo i dati a terzi per finalità commerciali.
+            I dati sono conservati su Google Firebase (Authentication e Cloud Firestore) e gli
+            eventi provengono da Google Calendar. Google agisce come fornitore del servizio secondo
+            le proprie condizioni e garanzie. Non vendiamo né cediamo i dati a terzi per finalità
+            commerciali.
           </p>
           <p>
-            Se il server o i fornitori si trovano fuori dallo Spazio economico europeo, il
-            trasferimento avviene secondo le garanzie previste dalla normativa applicabile.
+            Se i fornitori si trovano fuori dallo Spazio economico europeo, il trasferimento
+            avviene secondo le garanzie previste dalla normativa applicabile.
           </p>
         </section>
 
@@ -208,9 +186,10 @@ export default function PrivacyPage() {
         <section className="legal-section">
           <h2>9. Sicurezza</h2>
           <p>
-            L'accesso avviene tramite Google OAuth. La sessione è protetta da un cookie HttpOnly e,
-            in produzione, l'app deve essere servita in HTTPS. Ogni utente vede solo i propri
-            eventi e le proprie presenze; il refresh token Google è cifrato a riposo.
+            L'accesso usa Firebase Authentication con username e password. Le regole di sicurezza
+            di Firestore impediscono agli utenti di leggere o modificare le presenze altrui;
+            l'amministratore può consultarle. Il sito è servito in HTTPS tramite GitHub Pages.
+            L'accesso a Google Calendar è limitato all'amministratore e in sola lettura.
           </p>
         </section>
 

@@ -2442,3 +2442,472 @@ code {
     background-position: 0 0;
   }
 }
+
+/* ---------- Firebase account & admin ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field > span {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.field em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field textarea {
+  min-height: 130px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--faint);
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.field input:disabled,
+.field textarea:disabled {
+  opacity: 0.6;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-submit {
+  width: 100%;
+  height: 46px;
+  margin-top: 2px;
+}
+
+.login-logout {
+  align-self: center;
+}
+
+.role-pill {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 6px;
+  background: var(--accent-soft);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.sync-note {
+  margin-top: 6px !important;
+  font-size: 10.5px !important;
+  line-height: 1.35 !important;
+  color: var(--faint) !important;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.password-form strong {
+  font-size: 13.5px;
+}
+
+.password-form p {
+  margin-top: 3px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-error {
+  padding: 9px 11px;
+  background: var(--red-soft);
+  border: 1px solid color-mix(in srgb, var(--red) 26%, transparent);
+  border-radius: 9px;
+  color: var(--red);
+  font-size: 12px;
+}
+
+.form-hint {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--faint);
+}
+
+.form-hint code {
+  font-size: 0.95em;
+}
+
+.delete-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 430px;
+  margin-top: 10px;
+}
+
+.delete-form .danger-actions {
+  justify-content: flex-start;
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--accent);
+}
+
+.metric-card div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-card strong {
+  color: var(--text);
+  font-size: 19px;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-card span {
+  color: var(--muted);
+  font-size: 10.5px;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.admin-grid .section {
+  min-width: 0;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 16px;
+}
+
+.admin-form .button {
+  align-self: flex-start;
+}
+
+.error-list {
+  margin: 0;
+  padding: 9px 11px 9px 28px;
+  background: var(--red-soft);
+  border-radius: 9px;
+  color: var(--red);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.credentials-card {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 16px;
+}
+
+.credential-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.credential-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 11px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.credential-user {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  font-size: 11.5px;
+}
+
+.credential-user strong {
+  font-size: 12.5px;
+}
+
+.credential-user span {
+  color: var(--muted);
+}
+
+.credential-user em {
+  color: var(--faint);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.credential-row code {
+  padding: 5px 7px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.user-table-wrap {
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.user-table th {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--faint);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.user-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.user-table tr:last-child td {
+  border-bottom: none;
+}
+
+.user-name-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-name-button:hover {
+  color: var(--accent);
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.icon-button-danger:hover:not(:disabled) {
+  color: var(--red);
+}
+
+.admin-shield {
+  color: var(--accent);
+}
+
+.empty-inline {
+  padding: 18px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.calendar-admin-card {
+  padding: 16px;
+}
+
+.calendar-admin-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.calendar-admin-head strong {
+  font-size: 13.5px;
+}
+
+.calendar-admin-head p {
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 16px;
+}
+
+.record-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.record-row:last-child {
+  border-bottom: none;
+}
+
+.record-dot {
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--faint);
+}
+
+.record-present {
+  background: var(--green);
+}
+
+.record-absent {
+  background: var(--red);
+}
+
+.record-excused {
+  background: var(--amber);
+}
+
+.record-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.record-main strong {
+  overflow: hidden;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.record-main span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .admin-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .login-card {
+    padding: 24px 20px;
+  }
+
+  .admin-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .credential-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .credential-row code {
+    order: 3;
+    width: 100%;
+    white-space: normal;
+    word-break: break-all;
+  }
+
+  .calendar-admin-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .calendar-admin-head .button {
+    width: 100%;
+  }
+
+  .record-row {
+    align-items: flex-start;
+  }
+
+  .record-row .badge {
+    flex-shrink: 0;
+  }
+}

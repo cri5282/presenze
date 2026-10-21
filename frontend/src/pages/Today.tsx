@@ -11,12 +11,12 @@ import type { AttendanceStatus, EventItem } from "../types";
 
 export default function TodayPage() {
   const { user } = useAuth();
-  const { version, syncing } = useSync();
+  const { version, syncing, lastSyncAt } = useSync();
   const { push } = useToast();
   const [events, setEvents] = useState<EventItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reload, setReload] = useState(0);
-  const [busyId, setBusyId] = useState<number | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
   const [bulkBusy, setBulkBusy] = useState(false);
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export default function TodayPage() {
 
       <div className="sync-line">
         <span>
-          {syncing ? "Sincronizzazione in corso…" : `Aggiornato ${timeAgo(user?.last_sync_at ?? null)}`}
+          {syncing ? "Sincronizzazione in corso…" : `Aggiornato ${timeAgo(lastSyncAt)}`}
         </span>
         {unmarkedStarted.length > 0 ? (
           <button
@@ -242,7 +242,7 @@ export default function TodayPage() {
           <EmptyState icon={<CalendarX2 size={26} />} title={error ? "Eventi non disponibili" : "Nessuna lezione oggi"}>
             {error
               ? "Riprova tra poco o controlla la sincronizzazione."
-              : "Gli eventi del tuo Google Calendar compariranno qui automaticamente."}
+              : "Gli eventi del calendario condiviso compariranno qui dopo la sincronizzazione dell'amministratore."}
           </EmptyState>
         ) : (
           <div className="event-list">
