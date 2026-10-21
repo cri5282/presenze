@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Bootstrap di Firebase per Presenze.
+ * Bootstrap di Firebase per Registro.
  *
  * Crea l'amministratore, gli account degli studenti e importa eventi e presenze
  * dal JSON prodotto da `migration/export-from-sqlite.py`.
@@ -228,7 +228,7 @@ async function main() {
       ? `Admin: ${adminUsername} / ${adminPassword}`
       : `Admin: ${adminUsername} / password invariata (usa ADMIN_PASSWORD per reimpostarla)`;
   const lines = [
-    "Presenze — credenziali generate dal bootstrap Firebase",
+    "Registro — credenziali generate dal bootstrap Firebase",
     `Progetto: ${projectId}`,
     adminPasswordLine,
     "",

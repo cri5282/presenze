@@ -1,6 +1,6 @@
 rules_version = '2';
 
-// Presenze — Firestore Security Rules
+// Registro — Firestore Security Rules
 //
 // Modello:
 //   users/{username}          profilo e ruolo (admin/user)
